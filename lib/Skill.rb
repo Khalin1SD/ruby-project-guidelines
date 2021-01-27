@@ -1,6 +1,7 @@
 class Skill < ActiveRecord::Base
 
-    belongs_to :employees
+    has_many :employeeskills
+    
 
 end
 
