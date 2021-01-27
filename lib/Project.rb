@@ -5,9 +5,8 @@ class Project < ActiveRecord::Base
     has_many :projectskills
     has_many :employeeprojects
     has_many :skills, through: :projectskills
+    has_many :employees, through: :employeeprojects
     
-
-
 
 end
    
