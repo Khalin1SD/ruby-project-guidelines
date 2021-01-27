@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 7) do
 
-  create_table "employee_projects", force: :cascade do |t|
+  create_table "employeeprojects", force: :cascade do |t|
     t.integer "employee_id"
     t.integer "project_id"
     t.string "status"

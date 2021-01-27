@@ -4,8 +4,8 @@ Skill.destroy_all
 Project.destroy_all
 
 Employeeskill.destroy_all
-#EmployeeProjects.destroy_all
-#ProjectSkills.destroy_all
+Employeeproject.destroy_all
+Projectskill.destroy_all
 
 
 employer1 = Employer.create(name: "Bill Lumbergh")
@@ -30,6 +30,8 @@ project2 = Project.create(name: "File TPS Reports")
 project3 = Project.create(name: "Destroy Printer")
 project4 = Project.create(name: "Reorganize")
 
+##Setup Employee Skills##
+
 #give Peter Skills
 employee_skill1 = Employeeskill.create(employee_id:employee1.id, skill_id: skill1.id, competency: 8)
 employee_skill2 = Employeeskill.create(employee_id:employee1.id, skill_id: skill2.id, competency: 8)
@@ -44,7 +46,25 @@ employee_skill7 = Employeeskill.create(employee_id:employee2.id, skill_id: skill
 #give Milton Skills
 employee_skill8 = Employeeskill.create(employee_id:employee4.id, skill_id: skill5.id, competency: 10)
 
-#Setup project skills
-#project_skill1 = ProjectSkill
+
+##Setup project skills##
+
+#skim money
+project_skill1 = Projectskill.create(project_id: project1.id, skill_id: skill1.id, competency_requirement: 8)
+project_skill2 = Projectskill.create(project_id: project1.id, skill_id: skill2.id, competency_requirement: 6)
+project_skill3 = Projectskill.create(project_id: project1.id, skill_id: skill3.id, competency_requirement: 8)
+
+#file TPS report
+project_skill4 = Projectskill.create(project_id: project2.id, skill_id: skill4.id, competency_requirement: 2)
+
+
+##Setup Employee Projects##
+
+#Skim Money#
+employee_project_1 = Employeeproject.create(employee_id: employee1.id, project_id: project1.id, status: "Active")
+employee_project_2 = Employeeproject.create(employee_id: employee2.id, project_id: project2.id, status: "Active")
+
+
+
 
 
