@@ -7,8 +7,42 @@ class Project < ActiveRecord::Base
 
     def self.requirements_gap
         #return list of projects not meeting their requirements WITH the missing skills and how much they are missing
+        skills_list = Skill.all.map {|skill| skill.name}
         project_list = self.skills_requirements("not_met")
-        binding.pry
+        project_list.each do |project|
+            if project.projectskills.length == 0
+                puts "\n" + project.name +  "\n\nNo skill requirements assigned\n\n"
+            else
+                #build array that shows difference between team skills and project requirements
+                #skills_list = project.projectskills.map {|link| Skill.find(link.skill_id).name}
+                project_requirements_array = project.requirement_array
+                team_competency_array = project.team_competency
+                difference_array = [team_competency_array,project_requirements_array].transpose.map {|x| x.reduce(:-)}
+                
+                #itterate through differenc array and pull out skills that are lacking
+                
+                puts "\n" + project.name +  "\n\nSkill\t\tdefficiency\n\n"
+                
+                i=0
+
+                if project.employees.length >0
+                    #if project is staffed
+                    difference_array.length.times do
+                        #binding.pry
+                        if difference_array[i] < 0
+                            puts skills_list[i] +"\t\t"+ difference_array[i].to_s
+                        end
+                        i += 1
+                    end
+                else
+                    difference_array.length.times do
+                        puts skills_list[i] +"\t\t"+ difference_array[i].to_s
+                        i += 1
+                    end
+                end
+            end
+
+        end
     end
 
     def add_skill_requirement(skill,requirement)
@@ -112,6 +146,8 @@ class Project < ActiveRecord::Base
         end
         team_competency_array
     end
+
+
 
 
 
