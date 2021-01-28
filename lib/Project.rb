@@ -161,5 +161,6 @@ class Project < ActiveRecord::Base
         Project.create(name: title)
     end
 
+
 end
    
