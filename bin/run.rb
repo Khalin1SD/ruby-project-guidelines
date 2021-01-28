@@ -57,24 +57,27 @@ def application
                 employee.what_can_i_do?
             else
                 list = Skill.list
-                skill = prompt.select("Choose a skill")
+                #list.push("New Skill") ## should add "New Skill to hash"
+                skill = prompt.select("Choose a skill",list)
                 if choice == "add_skill"
-                    puts "How good is #{employee.name} at #{skill}?"
-                    comp = prompt.ask("Provide number in range: 1-10?") { |q| q.in("1-10")
+                    puts "How good is #{employee.name} at #{skill.name}?"
+                    comp = prompt.ask("Provide number in range: 1-10?") { |q| q.in("1-10")}
                     employee.add_skill(skill,comp)
-                else choice == "learn_new_skill"
+                    puts "Congradulations #{employee.name} can now #{skill.name}"
+                elsif choice == "learn_new_skill"
+                    binding.pry
                     employee.learn_new_skill(skill)
-                else 
+                else
                     employee.improve_skill(skill)
                 end
-                binding.pry
             end
         end
 
         puts "end of application"
 end
 
-login
+#login
+#application
 
 
 binding.pry

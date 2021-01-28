@@ -20,23 +20,23 @@ class Employee < ActiveRecord::Base
     end
 
     def self.who_can_do_this?(this_skill)
-        #takes in the name of a skill (string) and prints the list of employee names
+        #takes in the name of a skill (object from tty) and prints the list of employee names
         
         #convert this_skill string to object
-        skill_object = Skill.find_by(name: this_skill)
+        #skill_object = Skill.find_by(name: this_skill)
 
-        #check if skill exists
-        if skill_object
+        #check if skill exists, no longer needed because skill is object
+        if this_skill
             #check if skill assigned to anyone
-            if Employeeskill.find_by(skill_id: skill_object.id)
+            if Employeeskill.find_by(skill_id: this_skill.id)
                 #if assigned to someone, get list of employees and print
-                employee_list = Employee.joins(:skills).where(skills: {name: this_skill})
+                employee_list = Employee.joins(:skills).where(skills: {name: this_skill.name})
                 employee_list.each {|employee| puts employee.name}
             else
                 puts "Nope, no one can do that"
             end
         else
-            puts "Never even heard of #{this_skill}"
+            puts "Never even heard of #{this_skill.name}"
         end
     end
 
@@ -65,14 +65,15 @@ class Employee < ActiveRecord::Base
         end
     end
 
-    def learn_new_skill(skill)
+    def learn_new_skill(training_skill)
         #improves skill comptancy by 1 and replaces active project
-        training_skill = Skill.all.find_by(name:skill)
-        if training_skill
-            puts "Ummm, I'm gonna need you to go ahead come in tomorrow and learn how to #{training_skill.name}"
-            employeeskills.create(employee_id: self.id, skill_id: training_skill.id, competency: 1)
+        #training_skill = Skill.all.find_by(name:skill)
+        binding.pry
+        if self.skills.include?(training_skill)
+            puts "#{self.name} already has this skill, have a nice day!"
         else
-            self.new_skill_via_method(skill)
+            puts "Ummm, I'm gonna need you to go ahead and come in tomorrow and learn how to #{training_skill.name}."
+            employeeskills.create(employee_id: self.id, skill_id: training_skill.id, competency: 1)
         end
     end
 
@@ -84,18 +85,16 @@ class Employee < ActiveRecord::Base
     end
 
     def add_skill(skill, comp)
-        if Skill.all.map {|this| this.name}.include?("#{skill}") == false
-        puts "Sorry skill does not exist. See below."
-        puts Skill.all.map {|that| that.name}
+        #skill is object from TTY, comp it int
+        if Skill.all.include?(skill) == false
+            puts "Sorry skill does not exist. See below."
+            puts Skill.all.map {|that| that.name}
         
-        elsif (Skill.all.map {|this| this.name}.include?("#{skill}") == true) && (self.skills.find_by(name: skill))
-            puts "Already has skill"
-            
-            # self.skills.find_by(name: skill)
-            
+        elsif (Skill.all.include?(skill) == true) && (self.skills.include?(skill))
+            puts "#{self.name} already has this skill, have a nice day!"
+
         else
-            this_skill = Skill.all.find_by(name: "#{skill}").id
-            Employeeskill.create(employee_id:self.id, skill_id: this_skill, competency: comp)
+            Employeeskill.create(employee_id:self.id, skill_id: skill.id, competency: comp)
         end
 
     end
