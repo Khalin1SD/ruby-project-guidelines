@@ -157,6 +157,9 @@ class Project < ActiveRecord::Base
     end
 
 
+    def self.create_project(title) #project
+        Project.create(name: title)
+    end
 
 end
    

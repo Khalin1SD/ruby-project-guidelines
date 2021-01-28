@@ -3,18 +3,18 @@ class Employer < ActiveRecord::Base
     has_many :employees
 
 
-    def create_project(title)
+    def create_project(title) #project
         Project.create(name: title)
     end
 
-    def employee_active_project(name)
+    def employee_active_project(name) #employee
         if Employeeproject.all.select {|project| project.status == "Active"}.map {|project| project.employee_id}.include?(Employee.all.find_by(name: name).id)
         "Employee is busy."
         end
 
     end
     
-    def add_to_project(name, project)
+    def add_to_project(name, project) #emplyee
         if Employeeproject.all.select {|project| project.status == "Active"}.map {|project| project.employee_id}.include?(Employee.all.find_by(name: name).id)
         "Employee is busy."
         else
@@ -22,7 +22,7 @@ class Employer < ActiveRecord::Base
         end
     end
 
-    def hire_employee(name, manager)
+    def hire_employee(name, manager) #keep
         if Employee.all.map { |employee| employee.name }.include?(name)
         "Employee with this name already exists. Try adding middle inital."
         else
