@@ -5,18 +5,22 @@ class Project < ActiveRecord::Base
     has_many :skills, through: :projectskills
     has_many :employees, through: :employeeprojects
 
+    def self.requirements_gap
+        #return list of projects not meeting their requirements WITH the missing skills and how much they are missing
+        project_list = self.skills_requirements("not_met")
+        binding.pry
+    end
+
     def add_skill_requirement(skill,requirement)
         #takes in a skill name (string) and a competency_requirment (integer) and adds the requirement to the project
         skill_object = Skill.all.find_by(name: skill)
-        binding.pry
 
-        if skill_object && requirement.is_a? Integer #does the skill exist and is the requirement an intege?
+        if skill_object and requirement.is_a? Integer #does the skill exist and is the requirement an intege?
             Projectskill.create(project_id: self.id, skill_id: skill_object.id, competency_requirement: requirement)
         elsif skill_object #testing if the skill exists (if it does, the issue was with the requirement)
             puts "The skill level required must be an integer"
         else
-            #if the skill does not exist in the system
-            #does the user want to add it?
+            #if the skill does not exist in the system does the user want to add it?
             puts "This skill is not currently in our system"
             puts "Would you like to add it? (Y,N)"
             #####  .gets WILL THROW ERROR IN PRY #####
@@ -42,8 +46,6 @@ class Project < ActiveRecord::Base
         end
         requirements_not_met
    end
-
-    
     
     def self.skills_requirement_met
         #calls skills_requiremlent array and requests the list of projects that have people assigned
