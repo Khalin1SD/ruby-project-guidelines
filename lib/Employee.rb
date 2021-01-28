@@ -7,6 +7,18 @@ class Employee < ActiveRecord::Base
     has_many :projects, through: :employeeprojects
 
 
+    #method list
+        #Class methods
+            #list, who_can_do_this(skill_name), 
+        #instance methods
+            #improve_skill(skill_name), learn_new_skill(skill_name), what_can_i_do?, add_skill(skill,comp)
+
+
+# Class Methods            
+    def self.list
+        self.all.index_by(&:name)
+    end
+
     def self.who_can_do_this?(this_skill)
         #takes in the name of a skill (string) and prints the list of employee names
         
@@ -28,6 +40,8 @@ class Employee < ActiveRecord::Base
         end
     end
 
+#Instance Methods
+
     def improve_skill(skill)
         #improves skill comptancy by 1 and replaces active project
         training_skill = Skill.all.find_by(name:skill)
@@ -41,7 +55,7 @@ class Employee < ActiveRecord::Base
                 #####  .gets WILL THROW ERROR IN PRY #####
                 answer = gets.chomp
                 if answer == "Y"
-                    self.learning_new_skill(skill)
+                    self.learn_new_skill(skill)
                 else
                     puts "Your the boss"
                 end  
@@ -51,7 +65,7 @@ class Employee < ActiveRecord::Base
         end
     end
 
-    def learning_new_skill(skill)
+    def learn_new_skill(skill)
         #improves skill comptancy by 1 and replaces active project
         training_skill = Skill.all.find_by(name:skill)
         if training_skill
@@ -60,29 +74,6 @@ class Employee < ActiveRecord::Base
         else
             self.new_skill_via_method(skill)
         end
-    end
-
-    def new_skill_via_method(skill)
-        puts "This skill is not currently in our system"
-        puts "Would you like to add it? (Y,N)"
-        #####  .gets WILL THROW ERROR IN PRY #####
-        answer = gets.chomp
-        if answer == "Y"
-            puts "Ummm, I'm gonna need you to go ahead come in tomorrow and learn how to #{skill}"
-            new_skill = Skill.create(name: skill)
-            Employeeskill.create(employee_id: self.id, skill_id: new_skill.id, competency: 1)
-        else
-            puts "Your the boss"
-        end
-    end
-
-
-    def what_can_i_do_operations
-        skills_with_comp = {}
-        competency_list = self.employeeskills.map {|link| link.competency}
-        skills_list = self.employeeskills.map {|link| Skill.find(link.skill_id).name}
-        skills_list.zip(competency_list) {|skills,comp| skills_with_comp[skills] = comp}
-        skills_with_comp
     end
 
     def what_can_i_do?
@@ -109,6 +100,8 @@ class Employee < ActiveRecord::Base
 
     end
 
+#Methods to be accessed by other methods
+
     def competency_array
         #produces array of employee competency in order of Skill_id
         #0 is inserted if employee does not have this skill
@@ -122,8 +115,28 @@ class Employee < ActiveRecord::Base
         end
         competency_array
     end
-        
 
+    def what_can_i_do_operations
+        skills_with_comp = {}
+        competency_list = self.employeeskills.map {|link| link.competency}
+        skills_list = self.employeeskills.map {|link| Skill.find(link.skill_id).name}
+        skills_list.zip(competency_list) {|skills,comp| skills_with_comp[skills] = comp}
+        skills_with_comp
+    end
+
+    def new_skill_via_method(skill)
+        puts "This skill is not currently in our system"
+        puts "Would you like to add it? (Y,N)"
+        #####  .gets WILL THROW ERROR IN PRY #####
+        answer = gets.chomp
+        if answer == "Y"
+            puts "Ummm, I'm gonna need you to go ahead come in tomorrow and learn how to #{skill}"
+            new_skill = Skill.create(name: skill)
+            Employeeskill.create(employee_id: self.id, skill_id: new_skill.id, competency: 1)
+        else
+            puts "Your the boss"
+        end
+    end
 
    
 

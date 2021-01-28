@@ -5,6 +5,10 @@ class Project < ActiveRecord::Base
     has_many :skills, through: :projectskills
     has_many :employees, through: :employeeprojects
 
+    def self.list
+        self.all.index_by(&:name)
+    end
+
     def self.requirements_gap
         #return list of projects not meeting their requirements WITH the missing skills and how much they are missing
         skills_list = Skill.all.map {|skill| skill.name}
