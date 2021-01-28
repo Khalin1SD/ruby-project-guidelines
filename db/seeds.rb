@@ -62,7 +62,9 @@ project_skill4 = Projectskill.create(project_id: project2.id, skill_id: skill4.i
 
 #Skim Money#
 employee_project_1 = Employeeproject.create(employee_id: employee1.id, project_id: project1.id, status: "Active")
+employee_project_4 = Employeeproject.create(employee_id: employee1.id, project_id: project2.id, status: "Inactive")
 employee_project_2 = Employeeproject.create(employee_id: employee2.id, project_id: project2.id, status: "Active")
+employee_project_3 = Employeeproject.create(employee_id: employee3.id, project_id: project3.id, status: "Active")
 
 
 
