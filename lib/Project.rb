@@ -5,8 +5,35 @@ class Project < ActiveRecord::Base
     has_many :skills, through: :projectskills
     has_many :employees, through: :employeeprojects
 
+## Class Methods ##
     def self.list
         self.all.index_by(&:name)
+    end
+
+
+   def self.skills_requirement_not_met
+        #calls skills_requiremlent array and requests the list of projects that
+        #do meet the skills requirements
+        requirements_not_met =[]
+        requirements_not_met = skills_requirements("not met")
+        puts "Thes the team on these projects don't have enough skills:\n"
+        requirements_not_met.each do |project|
+            puts project.name
+        end
+        requirements_not_met
+    end
+
+    def self.skills_requirement_met
+        #calls skills_requiremlent array and requests the list of projects that have people assigned
+        #and meet the skills requirements
+        requirements_met =[]
+        requirements_met = skills_requirements("met")
+
+        puts "The projects are sufficiently staffed:\n"
+        requirements_met.each do |project|
+            puts project.name
+        end
+        requirements_met
     end
 
     def self.requirements_gap
@@ -73,30 +100,8 @@ class Project < ActiveRecord::Base
         end
     end
 
-   def self.skills_requirement_not_met
-        #calls skills_requiremlent array and requests the list of projects that
-        #do meet the skills requirements
-        requirements_not_met =[]
-        requirements_not_met = skills_requirements("not met")
-        puts "Thes the team on these projects don't have enough skills:\n"
-        requirements_not_met.each do |project|
-            puts project.name
-        end
-        requirements_not_met
-   end
-    
-    def self.skills_requirement_met
-        #calls skills_requiremlent array and requests the list of projects that have people assigned
-        #and meet the skills requirements
-        requirements_met =[]
-        requirements_met = skills_requirements("met")
 
-        puts "Thes projects are sufficiently staffed:\n"
-        requirements_met.each do |project|
-            puts project.name
-        end
-        requirements_met
-    end
+#methods to be called by other methods
 
     def self.skills_requirements(met_or_not)
         #Method builds array or competency_requirment and array of team member competency then get difference.
@@ -150,10 +155,6 @@ class Project < ActiveRecord::Base
         end
         team_competency_array
     end
-
-
-
-
 
 
 

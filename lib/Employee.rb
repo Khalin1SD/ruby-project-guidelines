@@ -20,12 +20,8 @@ class Employee < ActiveRecord::Base
     end
 
     def self.who_can_do_this?(this_skill)
-        #takes in the name of a skill (object from tty) and prints the list of employee names
+        #takes in a skill (object from tty) and prints the list of employee names
         
-        #convert this_skill string to object
-        #skill_object = Skill.find_by(name: this_skill)
-
-        #check if skill exists, no longer needed because skill is object
         if this_skill
             #check if skill assigned to anyone
             if Employeeskill.find_by(skill_id: this_skill.id)
@@ -42,33 +38,27 @@ class Employee < ActiveRecord::Base
 
 #Instance Methods
 
-    def improve_skill(skill)
-        #improves skill comptancy by 1 and replaces active project
-        training_skill = Skill.all.find_by(name:skill)
-        if training_skill
-            if self.skills.find {|skill| skill == training_skill}
-                self.employeeskills.find_by(skill_id: training_skill.id).competency += 1
-            else
-                puts "Employee does not have this skill."
+    def improve_skill(training_skill)
+        prompt = TTY::Prompt.new
+        #improves skill comptancy by 1
 
-                puts "Would you like to add it?(Y,N)"
-                #####  .gets WILL THROW ERROR IN PRY #####
-                answer = gets.chomp
-                if answer == "Y"
-                    self.learn_new_skill(skill)
-                else
-                    puts "Your the boss"
-                end  
-            end
+        if self.skills.include?(training_skill)
+            self.employeeskills.find_by(skill_id: training_skill.id).competency += 1
+            puts "#{self.name} is now better at #{training_skill.name}"
         else
-            self.new_skill_via_method(skill)
+            puts "Employee does not have this skill."
+            answer = prompt.yes?("Would you like to add it?")
+            if answer
+                self.learn_new_skill(training_skill)
+            else
+                puts "Your the boss"
+            end  
         end
     end
 
     def learn_new_skill(training_skill)
         #improves skill comptancy by 1 and replaces active project
-        #training_skill = Skill.all.find_by(name:skill)
-        binding.pry
+
         if self.skills.include?(training_skill)
             puts "#{self.name} already has this skill, have a nice day!"
         else
@@ -95,6 +85,7 @@ class Employee < ActiveRecord::Base
 
         else
             Employeeskill.create(employee_id:self.id, skill_id: skill.id, competency: comp)
+            puts "Congradulations #{self.name} can now #{skill.name}"
         end
 
     end
