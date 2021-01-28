@@ -5,32 +5,21 @@ class Skill < ActiveRecord::Base
     
     def self.least_common_skill
         lc_skill_id = Employeeskill.all.map { |employee| employee.skill_id}.uniq.min_by{ |i| Employeeskill.all.map { |employee| employee.skill_id}.count(i)}
-        Skill.all.find(lc_skill_id).name
+        puts self.all.find(lc_skill_id).name
     end
 
-    # Skill.all.select { |skill| skill.sum {|item| item.compentency}}
+
 
     def self.lowest_competency
         this = {}
-        this = Skill.all.collect {|skill| [skill,skill.employeeskills.sum {|item| item.competency}]}.to_h
-            # binding.pry
-            puts this.max_by{|k,v| v}[0].name
-            #skill.employeeskills.sum {|item| item.competency}
+        this = self.all.collect {|skill| [skill,skill.employeeskills.sum {|item| item.competency}]}.to_h
+        puts this.max_by{|k,v| v}[0].name
 
     end
 
-
-#          Skill.all.self.employeeskills
-
-
-
-
-
-
-
-
-
-
+    def self.list
+        self.all.index_by(&:name)
+    end
 
 end
 

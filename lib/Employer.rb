@@ -26,11 +26,19 @@ class Employer < ActiveRecord::Base
         if Employee.all.map { |employee| employee.name }.include?(name)
         "Employee with this name already exists. Try adding middle inital."
         else
-            Employee.create(name: name, employer_id: Employer.all.find_by(name: manager).id) 
+            Employee.create(name: name, employer_id: manager.id) 
         end
     end
 
 
+    def self.list
+        self.all.index_by(&:name)
+    end
+
+    def my_reports
+        self.employees.each {|employee| puts "#{employee.name}\n"}
+        "have a nice day"
+    end
 
 end
 
