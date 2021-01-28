@@ -109,6 +109,22 @@ class Employee < ActiveRecord::Base
 
     end
 
+    def competency_array
+        #produces array of employee competency in order of Skill_id
+        #0 is inserted if employee does not have this skill
+        competency_array = []
+        Skill.all.each do |skill|
+            if self.employeeskills.find_by(skill_id: skill.id)
+                competency_array << self.employeeskills.find_by(skill_id: skill.id).competency
+            else
+                competency_array << 0
+            end
+        end
+        competency_array
+    end
+        
+
+
    
 
 end

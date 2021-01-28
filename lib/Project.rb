@@ -6,32 +6,86 @@ class Project < ActiveRecord::Base
     has_many :employeeprojects
     has_many :skills, through: :projectskills
     has_many :employees, through: :employeeprojects
+
+
+   def self.skills_requirement_not_met
+        #calls skills_requiremlent array and requests the list of projects that
+        #do meet the skills requirements
+        requirements_not_met =[]
+        requirements_not_met = skills_requirements("not met")
+        puts "Thes the team on these projects don't have enough skills:\n"
+        requirements_not_met.each do |project|
+            puts project.name
+        end
+        requirements_not_met
+   end
+
     
-    # def self.skills_requirement_met
-        
-    #     #need to itterate through each project and find difference between skills_requirements method and team_skills method
+    
+    def self.skills_requirement_met
+        #calls skills_requiremlent array and requests the list of projects that have people assigned
+        #and meet the skills requirements
+        requirements_met =[]
+        requirements_met = skills_requirements("met")
 
-    #     self.all.each do |project|
-    #         h1 = self.skills_requirements
-    #         h2 = self.team_skills
-    #         binding.pry
-    #         h1.dup.delete_if { |k,_| h2.key?(k) }
-    #         binding.pry
-    #     end
-
-
-    # end
-
-    def skills_requirements
-        skills_with_require = {}
-        requirements_list = self.projectskills.map {|link| link.competency_requirement}
-        skills_list = self.projectskills.map {|link| Skill.find(link.skill_id).name}
-        skills_list.zip(requirements_list) {|skills,require| skills_with_require[skills] = require}
-        skills_with_require
+        puts "Thes projects are sufficiently staffed:\n"
+        requirements_met.each do |project|
+            puts project.name
+        end
+        requirements_met
     end
 
-    def team_skills
-        self.employees.map {|team_member| team_member.what_can_i_do_operations}
+    def self.skills_requirements(met_or_not)
+        #Method builds array or competency_requirment and array of team member competency then get difference.
+        requirements_met =[]
+        requirements_not_met = []
+
+        self.all.each do |project|
+            if project.employees.length >0 #check to see if anyone is assigned, if true builds arrays
+                project_requirements_array = project.requirement_array
+                team_competency_array = project.team_competency
+                difference_array = [team_competency_array,project_requirements_array].transpose.map {|x| x.reduce(:-)}
+                if difference_array.min >= 0 # if difference_array has any number less than zero project goes into not_meet array
+                    requirements_met << project
+                else
+                    requirements_not_met << project
+                end
+            else
+                requirements_not_met << project
+            end
+        end
+
+        #based upon the variable passed, returns the requested array.
+        if met_or_not == "met"
+            return requirements_met
+        else
+            return requirements_not_met 
+        end
+    end
+
+    def requirement_array
+        #produces array of project requirements competency in order of Skill_id
+        #0 is inserted if employee does not have this skill
+        project_competency_array = []
+        Skill.all.each do |skill|
+            if self.projectskills.find_by(skill_id: skill.id)
+                project_competency_array << self.projectskills.find_by(skill_id: skill.id).competency_requirement
+            else
+                project_competency_array << 0
+            end
+        end
+        project_competency_array
+    end
+
+    def team_competency
+        #make array where each index corrisponds to a skill in system. Sum team skills in each index
+        skill_name_array = Skill.all.map {|skill| skill.name}
+        team_competency_array = Skill.all.map {|skill| 0}
+
+        team_skill_array = self.employees.each do |team_member|
+            team_competency_array = [team_competency_array,team_member.competency_array].transpose.map {|x| x.reduce(:+)}
+        end
+        team_competency_array
     end
 
 
