@@ -38,12 +38,13 @@ class Employee < ActiveRecord::Base
 
 #Instance Methods
 
-    def improve_skill(training_skill)
+    def improve_skill(training_skill) #updated with .update
         prompt = TTY::Prompt.new
         #improves skill comptancy by 1
 
         if self.skills.include?(training_skill)
-            self.employeeskills.find_by(skill_id: training_skill.id).competency += 1
+            comp = self.employeeskills.find_by(skill_id: training_skill.id).competency += 1
+            self.employeeskills.find_by(skill_id: training_skill.id).update(competency: comp)
             puts "#{self.name} is now better at #{training_skill.name}"
         else
             puts "Employee does not have this skill."
@@ -90,29 +91,43 @@ class Employee < ActiveRecord::Base
 
     end
 
-    def add_to_project(new_project) #skill needs some work.
+    def assign_to_exiting_project(exsiting_project)
+        self.employeeprojects.find_by(project_id: exsiting_project.id).update(status: "Active")
+    end
+    def assign_to_new_project(new_project)
+        Employeeproject.create(employee_id: self.id, project_id: new_project.id, status: "Active")
+    end
+
+
+
+    def add_to_project(new_project)
+        prompt = TTY::Prompt.new
+        is_project_assigned = self.employeeprojects.find_by(project_id: new_project.id)
         if Employeeproject.all.select {|project| project.status == "Active"}.map {|project| project.employee_id}.include?(self.id)
-        puts "Employee is already assigned to a project."
+            puts "Employee is already assigned to a project."
+            answer = prompt.yes?("Would you like to reassign them?")
+                if !answer
+                    return
+                else
+                    self.employeeprojects.each do |employeeproject_instance|
+                        if employeeproject_instance.status == "Active"
+                            employeeproject_instance.update(status: "Delayed")
+                        end
+                    end
+                    if is_project_assigned
+                        self.assign_to_exiting_project(new_project)
+                    else
+                        self.assign_to_new_project(new_project)
+                    end
+                puts "Employee has been assigned to #{new_project.name}"
+            end
         else
-            Employeeproject.create(employee_id: self.id, project_id: new_project.id, status: "Active") 
-            puts "Employee has been assigned to project"
+            self.assign_to_new_project(new_project)
+            puts "Employee has been assigned to #{new_project.name}"
         end
         
     end
-# is_project_assigned = self.employeeprojects.find_by(project_id: new_project.id)
 
-        # self.employeeprojects.each do |employeeproject_instance|
-        #     if employeeproject_instance.status == "Active"
-        #         employeeproject_instance.status = "Delayed"
-        #     end
-        # end
-
-        # if is_project_assigned
-        #     is_project_assigned.status = "Active"
-        # else
-        #     Employeeproject.create(employee_id: self.id, project_id: new_project.id, status: "Active")
-        # end
-        # puts "#{self.name} is now working on #{new_project.name}."
     def employee_active_project
         current_project_assignment=Employeeproject.all.select {|project| project.status =="Active" and project.employee_id == self.id}
         current_project = Project.all.find {|project| project.id == current_project_assignment[0].project_id}

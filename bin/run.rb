@@ -69,7 +69,7 @@ def application
 
         choice = prompt.select("What would you like to do?", methods_list)
 
-            #add project_instance_methods
+    
             # if choice =="destory_all"
             #     puts "You should not have fired Milton"
             #     Employer.destroy_all
@@ -79,6 +79,7 @@ def application
             #     Employeeskill.destroy_all
             #     Employeeproject.destroy_all
             #     Projectskill.destroy_all
+            #     choice = "EXIT"
             # end
 
 

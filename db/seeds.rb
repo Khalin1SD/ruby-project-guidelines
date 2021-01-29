@@ -2,7 +2,6 @@ Employer.destroy_all
 Employee.destroy_all
 Skill.destroy_all
 Project.destroy_all
-
 Employeeskill.destroy_all
 Employeeproject.destroy_all
 Projectskill.destroy_all
