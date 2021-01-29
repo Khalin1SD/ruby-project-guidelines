@@ -33,9 +33,9 @@ end
 
 def application
 
-    employee_instance_methods = ["what_can_i_do?", "add_skill", "learn_new_skill", "improve_skill"]
+    employee_instance_methods = ["what_can_i_do?", "add_skill", "learn_new_skill", "improve_skill", "add_to_project", "employee_active_project"]
     employee_class_methods = ["who_can_do_this?"]
-    employer_instance_methods = ["my_reports","hire_employee"]
+    employer_instance_methods = ["my_reports","hire_employee","fire_employee"]
     project_instance_methods = ["add_skill_requirement"]
     project_class_methods =["skills_requirement_not_met","skills_requirement_met", "requirements_gap"]
     skill_class_methods = ["least_common_skill","lowest_competency"]
@@ -49,12 +49,15 @@ def application
         {key: 3, name: "Have employee learn a new skill.", value: employee_instance_methods[2]},
         {key: 4, name: "Have employee attend training.", value: employee_instance_methods[3]},
         {key: 5, name: "List employees that can do a certian skill.", value: employee_class_methods[0]},
+        {key: 4, name: "Assign an employee to a project.", value: employee_instance_methods[4]},
+        {key: 4, name: "Find out what an employee is working on", value: employee_instance_methods[5]},
         {key: 5, name: "Add a new skill to a projects requirements list.", value: project_instance_methods[0]},
         {key: 6, name: "List of projects who are sufficently staffed.", value: project_class_methods[1]},
         {key: 7, name: "List of projects whos team dones not have enough skills in certain areas.", value: project_class_methods[0]},
         {key: 8, name: "List of projects with skills gaps and what those gaps are.", value: project_class_methods[2]},
         {key: 9, name: "List reports for a manager.", value: employer_instance_methods[0]},
         {key: 10, name: "Hire a new person.", value: employer_instance_methods[1]},
+        {key: 10, name: "Fire someone.", value: employer_instance_methods[2]},
         {key: 11, name: "Identify the least common skill on the team.", value: skill_class_methods[0]},
         {key: 12, name: "Identify the skill the team is weakest in.", value: skill_class_methods[1]},        
         {key: 20, name: "Exit Application", value: "EXIT"}]
@@ -68,6 +71,12 @@ def application
                 employee = prompt.select("Choose employee",list)
                 if choice == employee_instance_methods[0] #what_can_i_do?
                     employee.send(employee_instance_methods[0])
+                elsif choice == employee_instance_methods[5] #employee_active_project
+                    employee.send(employee_instance_methods[5])
+                elsif choice == employee_instance_methods[4] #add_to_project
+                    list = Project.list
+                    new_project = prompt.select("Choose a project",list)
+                    employee.send(employee_instance_methods[4], new_project)
                 else
                     list = Skill.list
                     skill = prompt.select("Choose a skill",list)
@@ -88,15 +97,17 @@ def application
                     Employee.who_can_do_this?(skill)
                 end
             elsif employer_instance_methods.any?(choice)
-                if choice == "my_reports"
-                    list = Employer.list
-                    manager = prompt.select("Choose a manager.",list)
-                    manager.my_reports
-                elsif choice == "hire_employee"
-                    list = Employer.list
-                    manager = prompt.select("Choose a manager.",list)
+                list = Employer.list
+                manager = prompt.select("Choose a manager.",list)
+                if choice == employer_instance_methods[0] #direct_reports
+                    manager.send(employer_instance_methods[0])
+                elsif choice == employer_instance_methods[1] #hire_employee
                     new_employee_name = prompt.ask("What is the new employee's name?")
-                    manager.hire_employee(new_employee_name)
+                    manager.send(employer_instance_methods[1],new_employee_name)
+                elsif choice == employer_instance_methods[2] #fire_employee
+                    list = Employee.list
+                    fired_employee = prompt.select("Choose employee to fire",list)
+                    manager.send(employer_instance_methods[2],fired_employee)
                 end
             elsif project_class_methods.any?(choice)
                 project_class_methods.each do |class_method|
@@ -121,11 +132,11 @@ def application
         puts "Thanks, you are now logged off."
 end
 
-#login
+login
 #application
 
 
-binding.pry
-puts "HELLO WORLD"
+# binding.pry
+# puts "HELLO WORLD"
 
 

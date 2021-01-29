@@ -6,10 +6,7 @@ class Employer < ActiveRecord::Base
         self.all.index_by(&:name)
     end
 
-    def employee_active_project(name)
-        if Employeeproject.all.select {|project| project.status == "Active"}.map {|project| project.employee_id}.include?(Employee.all.find_by(name: name).id)
-        puts "Employee is busy."
-        end
+
 
     def hire_employee(name)
         if Employee.all.map { |employee| employee.name }.include?(name)
@@ -19,6 +16,17 @@ class Employer < ActiveRecord::Base
             puts "Welcome #{name}"
         end
     end
+
+    def fire_employee(employee_object)
+        #remove from employeeprojects
+        employee_object.employeeprojects.destroy_all
+        #remove from employeeskills
+        employee_object.employeeskills.destroy_all
+        #remove from employees
+        employee_object.destroy
+    end
+
+
 
     def my_reports
         self.employees.each {|employee| puts "#{employee.name}\n"}
