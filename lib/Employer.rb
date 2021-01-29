@@ -10,6 +10,7 @@ class Employer < ActiveRecord::Base
         if Employeeproject.all.select {|project| project.status == "Active"}.map {|project| project.employee_id}.include?(Employee.all.find_by(name: name).id)
         puts "Employee is busy."
         end
+    end
 
     def hire_employee(name)
         if Employee.all.map { |employee| employee.name }.include?(name)
