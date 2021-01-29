@@ -63,24 +63,14 @@ def application
         {key: 15, name: "Identify the least common skill on the team.", value: skill_class_methods[0]},
         {key: 16, name: "Identify the skill the team is weakest in.", value: skill_class_methods[1]},
         {key: 17, name: "Add a new skill to the system.", value: skill_class_methods[2]},
-        #{key: 18, name: "Burn it all down.", value: "destroy_all"},        
+        {key: 18, name: "Burn it all down.", value: "destroy_all"},        
         {key: 20, name: "Exit Application", value: "EXIT"}]
 
 
         choice = prompt.select("What would you like to do?", methods_list)
 
     
-            # if choice =="destory_all"
-            #     puts "You should not have fired Milton"
-            #     Employer.destroy_all
-            #     Employee.destroy_all
-            #     Skill.destroy_all
-            #     Project.destroy_all
-            #     Employeeskill.destroy_all
-            #     Employeeproject.destroy_all
-            #     Projectskill.destroy_all
-            #     choice = "EXIT"
-            # end
+
 
 
             if employee_instance_methods.any?(choice)
@@ -164,6 +154,25 @@ def application
                     end
                 end
 
+            end
+
+
+            if choice =="destroy_all"
+                #binding.pry
+                puts "You should not have fired Milton"
+                puts "Deleting all records...."
+                sleep(1)
+                puts "..."
+                Employer.destroy_all
+                Employee.destroy_all
+                Skill.destroy_all
+                Project.destroy_all
+                Employeeskill.destroy_all
+                Employeeproject.destroy_all
+                Projectskill.destroy_all
+                sleep(1)
+                puts "Goodbye"
+                return
             end
 
             sleep(1)
