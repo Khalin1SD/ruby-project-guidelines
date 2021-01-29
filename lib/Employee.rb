@@ -128,8 +128,8 @@ class Employee < ActiveRecord::Base
         end
     end
 
-    def employee_active_project #employee
-        if Employeeproject.all.select {|project| project.status == "Active"}.map {|project| project.employee_id}.include?(self).id)
+    def employee_active_project
+        if Employeeproject.all.select {|project| project.status == "Active"}.map {|project| project.employee_id}.include?(self).id
         "Employee is busy."
         end
 
