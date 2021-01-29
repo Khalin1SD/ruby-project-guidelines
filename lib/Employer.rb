@@ -9,24 +9,25 @@ class Employer < ActiveRecord::Base
 
     def employee_active_project(name)
         if Employeeproject.all.select {|project| project.status == "Active"}.map {|project| project.employee_id}.include?(Employee.all.find_by(name: name).id)
-        "Employee is busy."
+        puts "Employee is busy."
         end
 
     end
     
     def add_to_project(name, project)
         if Employeeproject.all.select {|project| project.status == "Active"}.map {|project| project.employee_id}.include?(Employee.all.find_by(name: name).id)
-        "Employee is busy."
+            puts "Employee is busy."
         else
             Employeeproject.create(employee_id: Employee.all.find_by(name: name).id, project_id: Project.all.find_by(name: project).id, status: "Active")
         end
-    end
+    end 
 
-    def hire_employee(name, manager)
+    def hire_employee(name)
         if Employee.all.map { |employee| employee.name }.include?(name)
-        "Employee with this name already exists. Try adding middle inital."
+        puts "Employee with this name already exists. Try adding middle inital."
         else
-            Employee.create(name: name, employer_id: manager.id) 
+            Employee.create(name: name, employer_id: self.id) 
+            puts "Welcome #{name}"
         end
     end
 

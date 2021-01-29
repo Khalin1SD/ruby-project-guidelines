@@ -115,11 +115,10 @@ class Employee < ActiveRecord::Base
     end
 
     def new_skill_via_method(skill)
+        prompt = TTY::Prompt.new
         puts "This skill is not currently in our system"
-        puts "Would you like to add it? (Y,N)"
-        #####  .gets WILL THROW ERROR IN PRY #####
-        answer = gets.chomp
-        if answer == "Y"
+        answer = prompt.yes?("Would you like to add it?")
+        if answer
             puts "Ummm, I'm gonna need you to go ahead come in tomorrow and learn how to #{skill}"
             new_skill = Skill.create(name: skill)
             Employeeskill.create(employee_id: self.id, skill_id: new_skill.id, competency: 1)
