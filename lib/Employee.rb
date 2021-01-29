@@ -91,9 +91,8 @@ class Employee < ActiveRecord::Base
     end
 
     def add_to_project(new_project) #skill needs some work.
-
         is_project_assigned = self.employeeprojects.find_by(project_id: new_project.id)
-
+        
         self.employeeprojects.each do |employeeproject_instance|
             if employeeproject_instance.status == "Active"
                 employeeproject_instance.status = "Delayed"
@@ -150,16 +149,6 @@ class Employee < ActiveRecord::Base
             puts "Your the boss"
         end
     end
-
-    def employee_active_project
-        if Employeeproject.all.select {|project| project.status == "Active"}.map {|project| project.employee_id}.include?(self).id
-        "Employee is busy."
-        end
-
-    end
-
-
-
 
 
 end

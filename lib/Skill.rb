@@ -14,6 +14,11 @@ class Skill < ActiveRecord::Base
         puts this.max_by{|k,v| v}[0].name
     end
 
+    def self.add_new_skill(skill_name)
+        new_skill = Skill.create(name: skill_name)
+        puts "#{new_skill.name} has been added to the system."
+    end
+
     def self.list
         self.all.index_by(&:name)
     end

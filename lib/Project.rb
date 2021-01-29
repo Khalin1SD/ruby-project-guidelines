@@ -81,6 +81,7 @@ class Project < ActiveRecord::Base
         
         if requirement.is_a? Integer #is the requirement an intege?
             Projectskill.create(project_id: self.id, skill_id: skill_object.id, competency_requirement: requirement)
+            puts "#{skill_object.name} has been added to the requirements list for #{self.name}."
         elsif skill_object #testing if the skill exists (if it does, the issue was with the requirement)
             puts "The skill level required must be an integer"
         end
