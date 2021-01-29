@@ -52,7 +52,7 @@ class Project < ActiveRecord::Base
 
                 
                 puts "\n"
-                ap project.name#, :color = purpleish
+                puts project.name#, :color = purpleish
 
                 i=0
                 if project.employees.length >0
