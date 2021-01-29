@@ -8,18 +8,16 @@ class Skill < ActiveRecord::Base
         puts self.all.find(lc_skill_id).name
     end
 
-
-
     def self.lowest_competency
         this = {}
         this = self.all.collect {|skill| [skill,skill.employeeskills.sum {|item| item.competency}]}.to_h
         puts this.max_by{|k,v| v}[0].name
-
     end
 
     def self.list
         self.all.index_by(&:name)
     end
+
 
 end
 
