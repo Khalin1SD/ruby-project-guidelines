@@ -91,23 +91,28 @@ class Employee < ActiveRecord::Base
     end
 
     def add_to_project(new_project) #skill needs some work.
-
-        is_project_assigned = self.employeeprojects.find_by(project_id: new_project.id)
-
-        self.employeeprojects.each do |employeeproject_instance|
-            if employeeproject_instance.status == "Active"
-                employeeproject_instance.status = "Delayed"
-            end
-        end
-
-        if is_project_assigned
-            is_project_assigned.status = "Active"
+        if Employeeproject.all.select {|project| project.status == "Active"}.map {|project| project.employee_id}.include?(self.id)
+        puts "Employee is already assigned to a project."
         else
-            Employeeproject.create(employee_id: self.id, project_id: new_project.id, status: "Active")
+            Employeeproject.create(employee_id: self.id, project_id: new_project.id, status: "Active") 
+            puts "Employee has been assigned to project"
         end
-        puts "#{self.name} is now working on #{new_project.name}."
+        
     end
+# is_project_assigned = self.employeeprojects.find_by(project_id: new_project.id)
 
+        # self.employeeprojects.each do |employeeproject_instance|
+        #     if employeeproject_instance.status == "Active"
+        #         employeeproject_instance.status = "Delayed"
+        #     end
+        # end
+
+        # if is_project_assigned
+        #     is_project_assigned.status = "Active"
+        # else
+        #     Employeeproject.create(employee_id: self.id, project_id: new_project.id, status: "Active")
+        # end
+        # puts "#{self.name} is now working on #{new_project.name}."
     def employee_active_project
         current_project_assignment=Employeeproject.all.select {|project| project.status =="Active" and project.employee_id == self.id}
         current_project = Project.all.find {|project| project.id == current_project_assignment[0].project_id}
