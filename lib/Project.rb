@@ -50,26 +50,23 @@ class Project < ActiveRecord::Base
                 team_competency_array = project.team_competency
                 difference_array = [team_competency_array,project_requirements_array].transpose.map {|x| x.reduce(:-)}
                 
-                #itterate through differenc array and pull out skills that are lacking
+                combined_hash = Hash[skills_list.zip(difference_array)]
+
                 
-                puts "\n" + project.name +  "\n\nSkill\t\tdefficiency\n\n"
-                
+                puts "\n"
+                ap project.name, :color = purpleish
+
                 i=0
+                #binding.pry
 
                 if project.employees.length >0
                     #if project is staffed
-                    difference_array.length.times do
-                        #binding.pry
-                        if difference_array[i] < 0
-                            puts skills_list[i] +"\t\t"+ difference_array[i].to_s
-                        end
-                        i += 1
-                    end
+
+                    hash_for_printing = combined_hash.select {|skill,gap| gap < 0}
+                    ap hash_for_printing, :indent => -2
+       
                 else
-                    difference_array.length.times do
-                        puts skills_list[i] +"\t\t"+ difference_array[i].to_s
-                        i += 1
-                    end
+                    ap combined_hash, :indent =>-2
                 end
             end
 
