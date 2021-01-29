@@ -44,8 +44,6 @@ class Project < ActiveRecord::Base
             if project.projectskills.length == 0
                 puts "\n" + project.name +  "\n\nNo skill requirements assigned\n\n"
             else
-                #build array that shows difference between team skills and project requirements
-                #skills_list = project.projectskills.map {|link| Skill.find(link.skill_id).name}
                 project_requirements_array = project.requirement_array
                 team_competency_array = project.team_competency
                 difference_array = [team_competency_array,project_requirements_array].transpose.map {|x| x.reduce(:-)}
@@ -54,14 +52,11 @@ class Project < ActiveRecord::Base
 
                 
                 puts "\n"
-                ap project.name, :color = purpleish
+                ap project.name#, :color = purpleish
 
                 i=0
-                #binding.pry
-
                 if project.employees.length >0
                     #if project is staffed
-
                     hash_for_printing = combined_hash.select {|skill,gap| gap < 0}
                     ap hash_for_printing, :indent => -2
        
