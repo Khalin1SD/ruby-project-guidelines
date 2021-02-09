@@ -77,18 +77,12 @@ class Employee < ActiveRecord::Base
 
     def add_skill(skill, comp)
         #skill is object from TTY, comp it int
-        if Skill.all.include?(skill) == false
-            puts "Sorry skill does not exist. See below."
-            puts Skill.all.map {|that| that.name}
-        
-        elsif (Skill.all.include?(skill) == true) && (self.skills.include?(skill))
+        if (Skill.all.include?(skill) == true) && (self.skills.include?(skill))
             puts "#{self.name} already has this skill, have a nice day!"
-
         else
             Employeeskill.create(employee_id:self.id, skill_id: skill.id, competency: comp)
             puts "Congradulations #{self.name} can now #{skill.name}"
         end
-
     end
 
     def assign_to_exiting_project(exsiting_project)
