@@ -29,7 +29,7 @@ class Employee < ActiveRecord::Base
     end
 
     def improve_skill(skill)
-        #improves skill comptancy by 1 and replaces active project
+        #improves skill comptancy by 1
         training_skill = Skill.all.find_by(name:skill)
         if training_skill
             if self.skills.find {|skill| skill == training_skill}
@@ -38,16 +38,30 @@ class Employee < ActiveRecord::Base
                 puts "Employee does not have this skill."
 
                 puts "Would you like to add it?(Y,N)"
-                #####  .gets WILL THROW ERROR IN PRY #####
                 answer = gets.chomp
                 if answer == "Y"
-                    self.learning_new_skill(skill)
+                    training_skill = Skill.all.find_by(name:skill)
+                    if training_skill
+                        puts "Ummm, I'm gonna need you to go ahead come in tomorrow and learn how to #{training_skill.name}"
+                        employeeskills.create(employee_id: self.id, skill_id: training_skill.id, competency: 1)
+                    else
+                        self.new_skill_via_method(skill)
+                    end
                 else
                     puts "Your the boss"
                 end  
             end
         else
-            self.new_skill_via_method(skill)
+            puts "This skill is not currently in our system"
+            puts "Would you like to add it? (Y,N)"
+            answer = gets.chomp
+            if answer == "Y"
+                puts "Ummm, I'm gonna need you to go ahead come in tomorrow and learn how to #{skill}"
+                new_skill = Skill.create(name: skill)
+                Employeeskill.create(employee_id: self.id, skill_id: new_skill.id, competency: 1)
+            else
+                puts "Your the boss"
+            end
         end
     end
 
@@ -65,7 +79,6 @@ class Employee < ActiveRecord::Base
     def new_skill_via_method(skill)
         puts "This skill is not currently in our system"
         puts "Would you like to add it? (Y,N)"
-        #####  .gets WILL THROW ERROR IN PRY #####
         answer = gets.chomp
         if answer == "Y"
             puts "Ummm, I'm gonna need you to go ahead come in tomorrow and learn how to #{skill}"
