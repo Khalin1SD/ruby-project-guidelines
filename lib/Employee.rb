@@ -38,7 +38,7 @@ class Employee < ActiveRecord::Base
 
 #Instance Methods
 
-    def improve_skill(training_skill) #updated with .update
+    def improve_skill(training_skill)
         prompt = TTY::Prompt.new
         #improves skill comptancy by 1
 
